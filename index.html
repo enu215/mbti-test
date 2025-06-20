@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>MBTI 간단 테스트</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; text-align: center; padding-top: 50px; }
+    .question { margin: 30px 0; }
+    button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>MBTI 간단 테스트</h1>
+  <div id="quiz"></div>
+  <div id="result" style="display:none;"></div>
+
+  <script>
+    const questions = [
+      { q: "새로운 사람을 만나는 게", a: ["즐겁다", "부담스럽다"], type: "E" },
+      { q: "나는 즉흥적인 것을", a: ["좋아한다", "싫어한다"], type: "P" },
+      { q: "감정보다 이성이", a: ["더 중요하다", "덜 중요하다"], type: "T" },
+      { q: "세부사항보다는 큰 그림이", a: ["중요하다", "덜 중요하다"], type: "N" },
+      { q: "사람들과 함께 있는 것이", a: ["에너지를 준다", "피곤하게 한다"], type: "E" },
+    ];
+
+    let index = 0;
+    let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, P: 0, J: 0 };
+
+    function showQuestion() {
+      if (index >= questions.length) return showResult();
+
+      const q = questions[index];
+      document.getElementById("quiz").innerHTML = `
+        <div class="question">
+          <h2>${q.q}</h2>
+          <button onclick="answer(0)">✔ ${q.a[0]}</button>
+          <button onclick="answer(1)">✖ ${q.a[1]}</button>
+        </div>
+      `;
+    }
+
+    function answer(choice) {
+      const q = questions[index];
+      if (q.type === "E") scores[choice === 0 ? "E" : "I"]++;
+      if (q.type === "P") scores[choice === 0 ? "P" : "J"]++;
+      if (q.type === "T") scores[choice === 0 ? "T" : "F"]++;
+      if (q.type === "N") scores[choice === 0 ? "N" : "S"]++;
+      index++;
+      showQuestion();
+    }
+
+    function showResult() {
+      const mbti =
+        (scores.E > scores.I ? "E" : "I") +
+        (scores.N > scores.S ? "N" : "S") +
+        (scores.T > scores.F ? "T" : "F") +
+        (scores.P > scores.J ? "P" : "J");
+
+      const descriptions = {
+        INFP: "이상주의자! 감성 풍부한 몽상가",
+        ENFP: "열정적인 활동가, 자유로운 영혼",
+        ISTJ: "꼼꼼한 관리자형",
+        ESTP: "모험을 즐기는 사업가형",
+        // 필요한 MBTI 유형 추가 가능
+      };
+
+      document.getElementById("quiz").style.display = "none";
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML = `
+        <h2>당신의 MBTI는 ${mbti}!</h2>
+        <p>${descriptions[mbti] || "당신만의 독특한 MBTI!"}</p>
+      `;
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
